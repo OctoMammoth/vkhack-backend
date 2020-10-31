@@ -1,0 +1,29 @@
+{
+  "name": "namtek-backend-refactoring",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "start": "node ./src/app.js",
+    "dev": "nodemon ./src/app.js",
+    "migrate": "npx prisma migrate save --experimental -n '' && npx prisma migrate up --experimental && npx prisma generate"
+  },
+  "author": "OctoM",
+  "license": "ISC",
+  "devDependencies": {
+    "@prisma/cli": "^2.9.0"
+  },
+  "dependencies": {
+    "@graphql-tools/merge": "^6.2.5",
+    "@paljs/plugins": "^2.5.3",
+    "@prisma/client": "^2.9.0",
+    "bcryptjs": "^2.4.3",
+    "dotenv": "latest",
+    "graphql-tag": "^2.11.0",
+    "graphql-yoga": "^1.18.3",
+    "jsonwebtoken": "^8.5.1",
+    "pg": "^8.4.1",
+    "random-key": "^0.3.2",
+    "shortid": "^2.2.16"
+  }
+}

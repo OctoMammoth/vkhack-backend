@@ -1,0 +1,108 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+model User {
+    id              String          @id @default(cuid())
+    createdAt       DateTime        @default(now())
+    email           String
+    login           String          @unique
+    name            String?
+    surname         String?
+    patronymic      String?
+    reports         Report[]        @relation("ReportsAuthor")
+    reported        Report[]        @relation("Reports")
+    courses         Membership[]    @relation("Courses")
+    myCourses       Course[]        @relation("MyCourses")
+    password        String
+    role            Role            @default(USER)
+}
+
+model Course {
+    id              String          @id @default(cuid())
+    createdAt       DateTime        @default(now())
+    updateAt        DateTime        @updatedAt
+    type            String
+    startAt         DateTime
+    endAt           DateTime
+    author          User            @relation("MyCourses" ,fields: [authorId], references: [id])
+    authorId        String
+    members         Membership[]
+    sessions        Session[]
+}
+
+model Membership {
+    id              String          @id @default(cuid())
+    createdAt       DateTime        @default(now())
+    updateAt        DateTime        @updatedAt
+    courseId        String          
+    course          Course          @relation(fields: [courseId], references: [id])
+    userId          String
+    user            User            @relation("Courses", fields: [userId], references: [id])
+}
+
+model Session {
+    id              String          @id @default(cuid())
+    createdAt       DateTime        @default(now())
+    updateAt        DateTime        @updatedAt
+    date            DateTime
+    isVisible       Boolean         @default(false)
+    courseId        String          
+    course          Course          @relation(fields: [courseId], references: [id])
+    tasks           Task[]
+}
+
+model Task {
+    id              String          @id @default(cuid())
+    type            TaskType
+    url             String?
+    video           String?
+    title           String?
+    complete        TaskComplete[]
+}
+
+model TaskComplete {
+    id              String          @id @default(cuid())
+    urlType         TaskCompleteType
+    url             String
+    taskId          String
+    task            Task            @relation(fields: [taskId], references: [id])
+    memberId        String
+    member          User            @relation(fields: [memberId], references: [id])
+}
+
+enum TaskCompleteType {
+    external
+    internal
+}
+
+enum TaskType {
+    todo
+    video
+    url
+}
+
+model Report {
+    id              String          @id @default(cuid())
+    createdAt       DateTime        @default(now())
+    type            String
+    description     String
+    author          User            @relation("ReportsAuthor" ,fields: [authorId], references: [id])
+    authorId        String
+    reported        User            @relation("Reports" ,fields: [reportedId], references: [id])
+    reportedId      String
+}
+
+enum Role {
+    USER
+    EXPERT
+    ADMIN
+}

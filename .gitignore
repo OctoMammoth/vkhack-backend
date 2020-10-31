@@ -1,0 +1,9 @@
+yarn.lock
+package-lock.json
+node_modules
+.env
+.idea
+.vscode
+/data
+/prisma/migrations
+yarn-error.log
