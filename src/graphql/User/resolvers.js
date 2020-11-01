@@ -6,11 +6,20 @@ const { PrismaSelect } = require('@paljs/plugins');
 const User = {
     Query: {
         user: async (_parent, {} , { prisma, checkToken }, info) => {
-            const select = new PrismaSelect(info).value;
             const { id } = await checkToken()
             const args = { where : { id }}
+            const select = new PrismaSelect(info).value;
             return prisma.user.findOne({ ...args, ...select })
         },
+        findUser: async (_parent, { where }, { prisma }, info ) => {
+            const select = new PrismaSelect(info).value;
+            return prisma.user.findOne({ where, ...select })
+        },
+        findUserAdmin: async (_parent, { where }, { prisma, access }, info ) => {
+            await access()
+            const select = new PrismaSelect(info).value;
+            return prisma.user.findOne({ where, ...select })
+        }
     },
     Mutation: {
         registerUser: async (_parent, { data }, { prisma }) => {

@@ -3,6 +3,8 @@ const { default: gql } = require('graphql-tag')
 const User = gql`
     type Query {
         user: User
+        findUser(where: UserWhereInput!): UserPublic
+        findUserAdmin(where: UserWhereInput!): User
     }
 
     type Mutation {
@@ -20,12 +22,29 @@ const User = gql`
         surname: String
         patronymic: String
         reports: [Report]
-        # courses: [Member]
-        # myCourses: [Course]
+        instagram: String
+        courses: [Membership]
+        myCourses: [Course]
         role: String!
     }
 
+    type UserPublic {
+        id: String
+        login: String
+        createdAt: String
+        name: String
+        surname: String
+        patronymic: String
+        role: String
+        instagram: String
+    }
+
+    input UserWhereInput {
+        login: String!
+    }
+
     input RefreshUserInput {
+        instagram: String
         name: String
         surname: String
         patronymic: String

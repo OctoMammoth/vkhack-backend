@@ -5,6 +5,8 @@ const { resolvers } = require('./graphql/resolvers')
 const { checkRole } = require('./utils/auth')
 require('dotenv').config()
 
+process.env.TZ = 'UTC'
+
 const prisma = new PrismaClient()
 
 const server = new GraphQLServer({
@@ -14,6 +16,7 @@ const server = new GraphQLServer({
     context: (req) => {
         const { authorization } = req.request.headers
         const access = async (...roles) => {
+            roles.push('admin')
             const checks = await Promise.all(
                 roles.map(async (role) => {
                     return await checkRole(authorization, role, prisma, false)
@@ -37,7 +40,7 @@ const server = new GraphQLServer({
             if (find) {
                 return find
             } else {
-                throw new Error('Not access')
+                throw new Error('Token timeout')
             }
         }
         // const access = {
@@ -63,6 +66,6 @@ const server = new GraphQLServer({
 })
 const PORT = process.env.PORT || process.env.SERVER_PORT || 4000
 
-server.start({ port: PORT }, () => {
+server.start({ port: PORT, playground: '/playground', endpoint: '/graphql' }, () => {
     console.log(`Server is running on localhost:${PORT}`)
 })

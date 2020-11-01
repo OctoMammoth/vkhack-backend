@@ -6,9 +6,9 @@ const Report = gql`
         createdAt: String
         type: String
         description: String
-        author: User
+        author: UserPublic
         authorId: String
-        reported: User
+        reported: UserPublic
         reportedId: String
     }
 
